@@ -11,45 +11,44 @@ module Daga
 
   class Middleware
     attr :url
+    attr :model
 
-    def initialize(app, url = "/login")
+    def initialize(app, url = "/login", model = User)
       @app = app
       @url = url
+      @model = model
     end
 
     def call(env)
-      tuple = @app.call(env)
-      # If the path is the login one with a post check authentication
-      if env["PATH_INFO"] == @url && env["REQUEST_METHOD"] == "POST" 
-        [302, headers(env["SCRIPT_NAME"] + env["PATH_INFO"]), []]
+      req = Request.new(env)
+
+      if req.post? && req.path_info == @url
+        Helpers::login(@model, req.params["username"], req.params["password"])
       else
-        tuple
+        @app.call(env)
       end
     end
 
   private
-    def headers(path)
-      { "Location" => "%s?return=%s" % [url, encode(path)],
-        "Content-Type" => "application/json",
-        "Content-Length" => "0"
-      }
-    end
-
-    def encode(str)
-      URI.encode_www_form_component(str)
-    end
   end
 
   module Helpers
 
     def grant_jwt_to(user)
       user.auth_user_id = SecureRandom.uuid
-      AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
+      token = AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
+      payload = Oj.dump(token)
+      Response.new([payload], 201).finish
     end
 
     def login(model, username, password)
       user = model.authenticate(username, password)
-      grant_jwt_to(user) if user
+      if user
+        grant_jwt_to(user)
+      else
+        headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
+        Response.new([], 401, headers).finish
+      end
     end
 
     #def logout
