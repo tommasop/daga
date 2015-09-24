@@ -23,7 +23,7 @@ module Daga
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
-        Helpers::login(@model, req.params["username"], req.params["password"])
+        login(@model, req.params["username"], req.params["password"])
       else
         @app.call(env)
       end
