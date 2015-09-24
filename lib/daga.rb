@@ -20,7 +20,7 @@ module Daga
     end
 
     def call(env)
-      req = Request.new(env)
+      req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
         Helpers::login(@model, req.params["username"], req.params["password"])
@@ -38,7 +38,7 @@ module Daga
       user.auth_user_id = SecureRandom.uuid
       token = AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
       payload = Oj.dump(token)
-      Response.new([payload], 201).finish
+      Rack::Response.new([payload], 201).finish
     end
 
     def login(model, username, password)
@@ -47,7 +47,7 @@ module Daga
         grant_jwt_to(user)
       else
         headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
-        Response.new([], 401, headers).finish
+        Rack::Response.new([], 401, headers).finish
       end
     end
 
