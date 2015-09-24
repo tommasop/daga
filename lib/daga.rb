@@ -13,13 +13,14 @@ module Daga
       raise 'Secret must be provided' if opts[:secret].nil?
       @secret = opts[:secret]
       @url = url
+      @model = opts[:model]
     end
 
     def call(env)
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
-        login(@opts[:model], req.params["username"], req.params["password"])
+        login(@model, req.params["username"], req.params["password"])
       else
         @app.call(env)
       end
