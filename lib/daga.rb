@@ -6,14 +6,14 @@ module Daga
   class Middleware
     attr :url
 
-    def initialize(app, url = "/login", opts = {  model: User })
+    def initialize(app, url = "/login", opts = {})
       @app = app
       @opts = opts
 
       raise 'Secret must be provided' if opts[:secret].nil?
       @secret = opts[:secret]
       @url = url
-      @model = opts[:model]
+      @model = User 
     end
 
     def call(env)
