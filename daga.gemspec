@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "daga"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
   s.summary = %{Generic authentication protocol for rack API/JWT applications.}
   s.description = %Q{
     Provides all the protocol you need in order to do authentication on

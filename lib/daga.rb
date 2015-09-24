@@ -1,20 +1,19 @@
 require "armor"
 require "securerandom"
-require "uri"
 require "jwt"
 
 module Daga
-  def self.secret
-    raise 'Secret must be provided in a JWT_SECRET env variable' if ENV['JWT_SECRET'].nil?
-    @jwt_secret ||= ENV['JWT_SECRET']
-  end
-
   class Middleware
     attr :url
     attr :model
 
-    def initialize(app, url = "/login", model = User)
+    def initialize(app, opts = { url: "/login", model: User })
       @app = app
+      @opts = opts
+
+      raise 'Secret must be provided' if opts[:secret].nil?
+      @secret = opts[:secret]
+
       @url = url
       @model = model
     end
@@ -22,8 +21,8 @@ module Daga
     def call(env)
       req = Rack::Request.new(env)
 
-      if req.post? && req.path_info == @url
-        login(@model, req.params["username"], req.params["password"])
+      if req.post? && req.path_info == @opts[:url]
+        login(opts[:model], req.params["username"], req.params["password"])
       else
         @app.call(env)
       end
@@ -32,7 +31,7 @@ module Daga
     private
     def grant_jwt_to(user)
       user.auth_user_id = SecureRandom.uuid && user.save
-      token = AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
+      token = AuthToken.encode({ auth:  user.auth_user_id }, @secret)
       payload = Oj.dump(token)
       Rack::Response.new([payload], 201).finish
     end
