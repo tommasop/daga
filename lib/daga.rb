@@ -6,20 +6,20 @@ module Daga
   class Middleware
     attr :url
 
-    def initialize(app, url = "/login", opts = { model: User })
+    def initialize(app, url = "/login", opts = {  model: User })
       @app = app
-      @url = url
       @opts = opts
 
       raise 'Secret must be provided' if opts[:secret].nil?
       @secret = opts[:secret]
+      @url = url
     end
 
     def call(env)
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
-        login(opts[:model], req.params["username"], req.params["password"])
+        login(@opts[:model], req.params["username"], req.params["password"])
       else
         @app.call(env)
       end
