@@ -38,7 +38,6 @@ module Daga
     end
 
     def login(model, username, password)
-      puts model.authenticate(username, password)
       user = model.authenticate(username, password)
       if user
         grant_jwt_to(user)
@@ -94,7 +93,6 @@ module Daga
     module ClassMethods
       def authenticate(username, password)
         user = fetch(username)
-        puts user
         if user and is_valid_password?(user, password)
           return user
         end
