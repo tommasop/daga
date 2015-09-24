@@ -19,8 +19,8 @@ module Daga
 
     def call(env)
       tuple = @app.call(env)
-
-      if tuple[0] == 401 
+      # If the path is the login one with a post check authentication
+      if env["PATH_INFO"] == @url && env["REQUEST_METHOD"] == "POST" 
         [302, headers(env["SCRIPT_NAME"] + env["PATH_INFO"]), []]
       else
         tuple

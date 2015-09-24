@@ -1,3 +1,6 @@
 /pkg
 .gs
 .gems
+*~
+*.swp
+*.swo
