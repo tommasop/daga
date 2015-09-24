@@ -31,7 +31,7 @@ module Daga
 
     private
     def grant_jwt_to(user)
-      user.auth_user_id = SecureRandom.uuid
+      user.auth_user_id = SecureRandom.uuid && user.save
       token = AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
       payload = Oj.dump(token)
       Rack::Response.new([payload], 201).finish
