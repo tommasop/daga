@@ -29,11 +29,7 @@ module Daga
       end
     end
 
-  private
-  end
-
-  module Helpers
-
+    private
     def grant_jwt_to(user)
       user.auth_user_id = SecureRandom.uuid
       token = AuthToken.encode({ auth:  user.auth_user_id }, Daga.secret)
@@ -50,7 +46,9 @@ module Daga
         Rack::Response.new([], 401, headers).finish
       end
     end
+  end
 
+  module Helpers
     #def logout
     #  token.expire!
     #  model.reauth!
