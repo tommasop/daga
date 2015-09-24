@@ -28,5 +28,10 @@ The user model must have an auth_user_id attribute which will be filled with a u
 
 The user model must have a fetch method.
 
-The application must have a JWT_SECRET env variable set.
+The middleware must be passed a secret like this:
+
+```ruby
+use Daga::Middleware, "/login", { secret: "myawesomelylongandcomplexsecret" }
+```
+
 
