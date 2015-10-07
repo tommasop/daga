@@ -1,6 +1,8 @@
 require "armor"
 require "securerandom"
 require "jwt"
+# Access to external API
+require "faraday"
 
 module Daga
   class Middleware
@@ -14,13 +16,21 @@ module Daga
       @secret = opts[:secret]
       @url = url
       @model = User 
+      # The external auth option will be checked to
+      # add an external api call for authentication
+      # it must contain the api endpoint and the username
+      # and password parameters name
+      #
+      # example:
+      # external_auth: { url: "http://my.api.com/login", username: 'my_username_attribute', password: 'my_password_attribute'}
+      @external_auth = opts[:external_auth] 
     end
 
     def call(env)
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
-        login(@model, req.params["username"], req.params["password"])
+        login(req.params["username"], req.params["password"])
       else
         @app.call(env)
       end
@@ -35,14 +45,30 @@ module Daga
       Rack::Response.new([payload], 201).finish
     end
 
-    def login(model, username, password)
-      user = model.authenticate(username, password)
+    def login(username, password)
+      return external_login(username, password) if @external_auth
+      user = @model.authenticate(username, password)
       if user
         grant_jwt_to(user)
       else
-        headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
-        Rack::Response.new([], 401, headers).finish
+        no_auth
       end
+    end
+
+    def external_login(username, password)
+      external_user =  Faraday.post @external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password} 
+      if external_user
+        permissions = Faraday.get @external_auth[:acl_url]
+        external_user[:scopes] = parmissions 
+        grant_jwt_to(external_user)
+      else
+        no_auth
+      end
+    end
+
+    def no_auth
+      headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
+      Rack::Response.new([], 401, headers).finish
     end
   end
 
