@@ -30,6 +30,7 @@ module Daga
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
+        req.params["username"] = req.params["email"] if req.params["email"]
         login(req.params["username"], req.params["password"])
       else
         @app.call(env)
