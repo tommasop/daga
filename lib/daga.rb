@@ -54,6 +54,7 @@ module Daga
       return external_login(username, password) if @external_auth
       user = @model.authenticate(username, password)
       if user
+        puts user.phone
         grant_jwt_to(user)
       else
         no_auth
@@ -121,11 +122,9 @@ module Daga
 
     module ClassMethods
       def authenticate(username, password)
-        puts username
         user = fetch(username)
-        puts user
-        puts user.phone
         if user and is_valid_password?(user, password)
+          puts user.phone
           return user
         end
       end
