@@ -30,8 +30,8 @@ module Daga
       req = Rack::Request.new(env)
 
       if req.post? && req.path_info == @url
-        puts req.body.read
         login_data = Oj.dump( req.body.read )
+        puts login_data 
         if login_data
           login(login_data["email"], login_data["password"])
         else
