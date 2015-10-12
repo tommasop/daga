@@ -31,8 +31,6 @@ module Daga
 
       if req.post? && req.path_info == @url
         login_data = Oj.load( req.body.read )
-        puts login_data 
-        puts login_data["email"] 
         if login_data
           login(login_data["email"], login_data["password"])
         else
@@ -54,6 +52,8 @@ module Daga
 
     def login(username, password)
       return external_login(username, password) if @external_auth
+      puts username
+      puts password
       user = @model.authenticate(username, password)
       if user
         grant_jwt_to(user)
