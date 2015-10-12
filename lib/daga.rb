@@ -32,6 +32,7 @@ module Daga
       if req.post? && req.path_info == @url
         login_data = Oj.dump( req.body.read )
         puts login_data 
+        puts login_data[0]["email"] 
         if login_data
           login(login_data["email"], login_data["password"])
         else
