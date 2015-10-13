@@ -77,41 +77,6 @@ module Daga
     end
   end
 
-  module Helpers
-    #def logout
-    #  token.expire!
-    #  model.reauth!
-    #end
-
-    # Check incoming API request with a web token
-    #def check_jwt_token
-    #  if valid_header?
-    #    begin
-    #      token = env['HTTP_AUTHORIZATION'].split(' ')[-1]
-    #      # Add a leeway of 30 secs 
-    #      decoded_token = AuthToken.decode(token, Daga.secret, 30)
-    #    rescue ::JWT::DecodeError
-    #      nil
-    #    end
-    #  else
-    #    nil
-    #    return_jwt_header_error(env)
-    #  end
-    #end
-
-    #def return_jwt_header_error
-    #  if env['HTTP_AUTHORIZATION'].nil?
-    #    return_error('Missing Authorization header')
-    #  elsif env['HTTP_AUTHORIZATION'].split(' ').first != 'Bearer'
-    #    return_error('Invalid Authorization header format')
-    #  end
-    #end
-
-    #def valid_header?
-    #  env['HTTP_AUTHORIZATION'] =~ /\ABearer \S*\.\S*\.\S*\z/
-    #end
-  end
-
   module Model
     def self.included(model)
       model.extend(ClassMethods)
