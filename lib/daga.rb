@@ -46,7 +46,7 @@ module Daga
       user.auth_user_id = SecureRandom.uuid
       user.save
       token = AuthToken.encode({ auth: user.auth_user_id, scopes: user.scopes }, @secret)
-      payload = Oj.dump(id_token: token)
+      payload = Oj.dump({"id_token" => token})
       Rack::Response.new([payload], 201).finish
     end
 
