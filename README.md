@@ -34,4 +34,10 @@ The middleware must be passed a secret like this:
 use Daga::Middleware, "/login", { secret: "myawesomelylongandcomplexsecret" }
 ```
 
+The response will include an `id_token` key with the token like this:
+
+```
+{"id_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI5NiJ9.eyJhdXRoIjoiNjAiNTlkNDAtMDUzTi00OGE4LWI1YzAtOTEwMGExOTNkNGLxIiwic2NvcGVzIjoie1wibG9jYXRpb25zXCI6IFtcImdldFwiXX0iLCJleHAiOjE0NDUwMTk4MDd9.UwyGMLJDLtxshP0e7uE0O4wQACwpHP9VYvj5032NxEA"}
+```
+
 
