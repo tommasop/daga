@@ -32,7 +32,7 @@ module Daga
       if req.post? && req.path_info == @url
         login_data = Oj.load( req.body.read )
         if login_data
-          login(login_data["email"], login_data["password"])
+          login(login_data[:email], login_data[:password])
         else
           login(req.params["username"], req.params["password"])
         end
