@@ -64,7 +64,7 @@ module Daga
       external_user =  Faraday.post @external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password} 
       if external_user
         permissions = Faraday.get @external_auth[:acl_url]
-        external_user[:scopes] = parmissions 
+        external_user[:scopes] = permissions 
         grant_jwt_to(external_user)
       else
         no_auth
