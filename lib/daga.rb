@@ -3,6 +3,7 @@ require "securerandom"
 require "jwt"
 # Access to external API
 require "faraday"
+require "oj"
 
 module Daga
   class Middleware
@@ -20,9 +21,12 @@ module Daga
       # add an external api call for authentication
       # it must contain the api endpoint and the username
       # and password parameters name
-      #
+      # if there are permissions you need to ad th url that gives them back
       # example:
-      # external_auth: { url: "http://my.api.com/login", username: 'my_username_attribute', password: 'my_password_attribute'}
+      # external_auth: { url: "http://my.api.com/login",
+      #                  username: 'my_username_attribute', 
+      #                  password: 'my_password_attribute', 
+      #                  acl_url: "http://my.api.com/permissions" }
       @external_auth = opts[:external_auth] 
     end
 
@@ -61,9 +65,9 @@ module Daga
     end
 
     def external_login(username, password)
-      external_user =  Faraday.post @external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password} 
-      if external_user
-        permissions = Faraday.get @external_auth[:acl_url]
+      external_user =  Oj.load(Faraday.get(@external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password}).body) 
+      if external_user["login"] == "true"
+        permissions = Oj.load(Faraday.get(@external_auth[:acl_url]).body)
         external_user[:scopes] = permissions 
         grant_jwt_to(external_user)
       else

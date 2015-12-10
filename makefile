@@ -4,4 +4,4 @@ test:
 	cutest -r ./test/helper test/*.rb
 
 console:
-	@env $$(cat .env) irb -r ./lib
+	@env $$(cat .env) irb -r ./lib/daga
