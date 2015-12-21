@@ -24,7 +24,7 @@ so if you have a JWT token checker you need to exclude it for the database authe
 
 If the login is correct it grants a JWT token otherwise it returns proper json error and status.
 
-The user model must have an auth_user_id attribute which will be filled with a uuid.
+The user model must have an id attribute which will be filled with whatever identifier you think useful. 
 
 The user model must have a fetch method.
 

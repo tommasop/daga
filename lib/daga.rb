@@ -1,5 +1,4 @@
 require "armor"
-require "securerandom"
 require "jwt"
 # Access to external API
 require "faraday"
@@ -47,9 +46,7 @@ module Daga
 
     private
     def grant_jwt_to(user)
-      user.auth_user_id = SecureRandom.uuid
-      user.save
-      token = AuthToken.encode({ auth: user.auth_user_id, scopes: user.scopes }, @secret)
+      token = AuthToken.encode({ auth: user.id, scopes: user.scopes }, @secret)
       payload = Oj.dump({"id_token" => token})
       Rack::Response.new([payload], 201).finish
     end
