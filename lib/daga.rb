@@ -63,6 +63,7 @@ module Daga
 
     def external_login(username, password)
       external_user =  Oj.load(Faraday.get(@external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password}).body) 
+      puts external_user
       if external_user["login"] == "true"
         external_user[:id] = external_user[:lin]
         #permissions = Oj.load(Faraday.get(@external_auth[:acl_url]).body)
