@@ -46,7 +46,11 @@ module Daga
 
     private
     def grant_jwt_to(user)
-      token = AuthToken.encode({ auth: user.id, scopes: user.scopes }, @secret)
+      if user.is_a?(Hash)
+        token = AuthToken.encode({ auth: user[:id], scopes: user[:scopes] }, @secret)
+      else
+        token = AuthToken.encode({ auth: user.id, scopes: user.scopes }, @secret)
+      end
       payload = Oj.dump({"id_token" => token})
       Rack::Response.new([payload], 201).finish
     end
