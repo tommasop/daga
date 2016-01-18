@@ -67,7 +67,7 @@ module Daga
 
     def external_login(username, password)
       external_user =  Oj.load(Faraday.get(@external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password}).body) 
-      if external_user[:login] == "true"
+      if external_user[:login] == true
         #permissions = Oj.load(Faraday.get(@external_auth[:acl_url]).body)
         external_user[:scopes] = Oj.dump({"all": ["all"]}) #permissions 
         grant_jwt_to(external_user)
