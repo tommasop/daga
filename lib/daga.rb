@@ -34,6 +34,7 @@ module Daga
 
       if req.post? && req.path_info == @url
         login_data = req.body.read ? Oj.load( req.body.read ) : nil
+        puts login_data
         if login_data
           login(login_data[:email], login_data[:password])
         else
