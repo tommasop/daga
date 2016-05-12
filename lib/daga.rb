@@ -92,7 +92,6 @@ module Daga
     module ClassMethods
       def authenticate(username, password)
         user = fetch(username)
-        puts "------------------> #{is_valid_password?(user, password)}"
         if user and is_valid_password?(user, password)
           return user
         end
