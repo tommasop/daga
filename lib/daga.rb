@@ -32,7 +32,7 @@ module Daga
     def call(env)
       req = Rack::Request.new(env)
       puts env
-      puts req.body
+      puts req.body.read
 
       if req.post? && req.path_info == @url
         login_data = req.body.read ? Oj.load( req.body.read ) : nil
