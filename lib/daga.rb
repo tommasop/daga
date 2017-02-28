@@ -46,18 +46,8 @@ module Daga
       # Registering the request url to put in JWT sub
       # see: https://github.com/jwt/ruby-jwt#subject-claim
       @sub = req.base_url
-      MakeLog.log.info @sub
       if req.post? && req.path_info == @url
-        req_body = req.body ? req.body.read : nil
-        MakeLog.log.info "CLASS #{req_body.class}, CONTENT #{req_body}"
-        login_data = case  
-                     when req_body.is_a?(Hash)
-                       req_body
-                     when req_body.is_a?(String)
-                       Oj.load( req_body ) 
-                     else
-                       nil
-                     end
+        login_data = req.body ? Oj.load(req.body.read) : nil
         if login_data
           @job_id = login_data[:job_id] || 1
           login(login_data[:email], login_data[:password])
@@ -97,7 +87,7 @@ module Daga
       external_user =  Oj.load(Faraday.get(@external_auth[:url], {@external_auth[:username] => username, @external_auth[:password] => password}).body) 
       if external_user[:login] == true
         #permissions = Oj.load(Faraday.get(@external_auth[:acl_url]).body)
-        external_user[:scopes] = Oj.dump({"all" => ["all"]}) #permissions 
+        #external_user[:scopes] = Oj.dump([{"all" => ["all"]}) #permissions 
         grant_jwt_to(external_user)
       else
         no_auth
