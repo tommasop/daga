@@ -45,7 +45,7 @@ module Daga
       req = Rack::Request.new(env)
       # Registering the request url to put in JWT sub
       # see: https://github.com/jwt/ruby-jwt#subject-claim
-      @sub = req.base_url
+      @sub = env["HTTP_ORIGIN"] 
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load(req.body.read) : nil
         if login_data
@@ -118,12 +118,14 @@ module Daga
         end
       else
         payload[:services] << {  
+          id: "00001"
           name: "fenice", 
           version: "2.5",
           url: "http://localhost:3000", 
           role: "censore"
         }
         payload[:services] << {  
+          id: "00002"
           name: "ucad", 
           version: "beta",
           url: "http://localhost:3000/ucad", 
