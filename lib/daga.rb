@@ -48,6 +48,7 @@ module Daga
       @sub = req.base_url
       MakeLog.log.info @sub
       if req.post? && req.path_info == @url
+        MakeLog.log.info req.body.read
         login_data = req.body ? Oj.load( req.body.read ) : nil
         if login_data
           @job_id = login_data[:job_id] || 1
