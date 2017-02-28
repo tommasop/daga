@@ -45,11 +45,19 @@ module Daga
       req = Rack::Request.new(env)
       # Registering the request url to put in JWT sub
       # see: https://github.com/jwt/ruby-jwt#subject-claim
+      MakeLog.log.info env
       @sub = req.base_url
       MakeLog.log.info @sub
       if req.post? && req.path_info == @url
-        MakeLog.log.info req.body.read
-        login_data = req.body ? Oj.load( req.body.read ) : nil
+        req_body = req.body ? req.body.read : nil
+        login_data = case req_body 
+                     when is_a? Hash
+                      req_body
+                     when is_a? String
+                       Oj.load( req_body ) 
+                     else
+                       nil
+                     end
         if login_data
           @job_id = login_data[:job_id] || 1
           login(login_data[:email], login_data[:password])
