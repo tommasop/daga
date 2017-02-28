@@ -16,6 +16,9 @@ module Daga
       @secret = opts[:secret]
       @url = url
       @model = opts[:model].constantize || User 
+      # if the application is scoped by project
+      # you need to pass the job_id ad an option
+      @job_id = opts[:job_id] || 1
       # The external auth option will be checked to
       # add an external api call for authentication
       # it must contain the api endpoint and the username
@@ -31,6 +34,9 @@ module Daga
 
     def call(env)
       req = Rack::Request.new(env)
+      # Registering the request url to put in JWT sub
+      # see: https://github.com/jwt/ruby-jwt#subject-claim
+      @sub = req.base_url
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load( req.body.read ) : nil
         if login_data
@@ -46,7 +52,8 @@ module Daga
     private
     def grant_jwt_to(user)
       if user.is_a?(Hash)
-        token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
+        token = AuthToken.encode(token_data(user), @secret)
+        # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
       else
         token = AuthToken.encode({ auth: user.id, user: user, scopes: user.scopes }, @secret)
       end
@@ -78,6 +85,38 @@ module Daga
     def no_auth
       headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
       Rack::Response.new([], 401, headers).finish
+    end
+
+    def token_data(user_data)
+      payload = { 
+        "username": user_data[:username] || "root", 
+        "job_id": @job_id, 
+        "sub": @sub || "http://localhost:3000",
+        "services": []
+      }
+
+    if user_data[:scopes]
+      user_data[:scopes].each do | service |
+        payload["services"] << {  
+          "name": service[:name], 
+          "version": service[:version],
+          "url": service[:url], 
+          "role": service[:role]
+        }
+      end
+    else
+        payload["services"] << {  
+          "name": "fenice", 
+          "version": "2.5",
+          "url": "http://localhost:3000", 
+          "role": "censore"
+        }
+        payload["services"] << {  
+          "name": "ucad", 
+          "version": "beta",
+          "url": "http://localhost:3000/ucad", 
+          "role": "censore"
+        }
     end
   end
 
