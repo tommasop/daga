@@ -3,6 +3,9 @@ require "jwt"
 # Access to external API
 require "faraday"
 require "oj"
+require "logger"
+
+$logger = Logger.new($stdout)
 
 module Daga
   class Middleware
@@ -37,6 +40,7 @@ module Daga
       # Registering the request url to put in JWT sub
       # see: https://github.com/jwt/ruby-jwt#subject-claim
       @sub = req.base_url
+      $logger.info @sub
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load( req.body.read ) : nil
         if login_data
@@ -51,6 +55,7 @@ module Daga
 
     private
     def grant_jwt_to(user)
+      $logger.info user
       if user.is_a?(Hash)
         token = AuthToken.encode(token_data(user), @secret)
         # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
@@ -95,16 +100,16 @@ module Daga
         "services": []
       }
 
-    if user_data[:scopes]
-      user_data[:scopes].each do | service |
-        payload["services"] << {  
+      if user_data[:scopes]
+        user_data[:scopes].each do | service |
+          payload["services"] << {  
           "name": service[:name], 
           "version": service[:version],
           "url": service[:url], 
           "role": service[:role]
         }
-      end
-    else
+        end
+      else
         payload["services"] << {  
           "name": "fenice", 
           "version": "2.5",
@@ -117,6 +122,8 @@ module Daga
           "url": "http://localhost:3000/ucad", 
           "role": "censore"
         }
+      end
+      $logger.info payload
     end
   end
 
