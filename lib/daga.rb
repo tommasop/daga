@@ -51,9 +51,12 @@ module Daga
       if req.post? && req.path_info == @url
         req_body = req.body ? req.body.read : nil
         login_data = case  
-                     when req_body.is_a? Hash then req_body
-                     when req_body.is_a? String then Oj.load( req_body ) 
-                     else nil
+                     when req_body.is_a?(Hash)
+                       req_body
+                     when req_body.is_a?(String)
+                       Oj.load( req_body ) 
+                     else
+                       nil
                      end
         if login_data
           @job_id = login_data[:job_id] || 1
