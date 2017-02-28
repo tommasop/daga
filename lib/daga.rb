@@ -130,7 +130,7 @@ module Daga
           role: "censore"
         }
       end
-      MakeLog.log.info payload
+      payload
     end
   end
 
