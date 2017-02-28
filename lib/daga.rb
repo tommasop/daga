@@ -50,10 +50,10 @@ module Daga
       MakeLog.log.info @sub
       if req.post? && req.path_info == @url
         req_body = req.body ? req.body.read : nil
-        login_data = case req_body 
-                     when is_a? Hash
+        login_data = case  
+                     when req_body.is_a? Hash
                       req_body
-                     when is_a? String
+                     when req_body.is_a? String
                        Oj.load( req_body ) 
                      else
                        nil
