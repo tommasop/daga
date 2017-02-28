@@ -118,14 +118,14 @@ module Daga
         end
       else
         payload[:services] << {  
-          id: "00001"
+          id: "00001",
           name: "fenice", 
           version: "2.5",
           url: "http://localhost:3000", 
           role: "censore"
         }
         payload[:services] << {  
-          id: "00002"
+          id: "00002",
           name: "ucad", 
           version: "beta",
           url: "http://localhost:3000/ucad", 
