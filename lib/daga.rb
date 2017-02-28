@@ -19,9 +19,6 @@ module Daga
       @secret = opts[:secret]
       @url = url
       @model = opts[:model].constantize || User 
-      # if the application is scoped by project
-      # you need to pass the job_id ad an option
-      @job_id = opts[:job_id] || 1
       # The external auth option will be checked to
       # add an external api call for authentication
       # it must contain the api endpoint and the username
@@ -44,8 +41,10 @@ module Daga
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load( req.body.read ) : nil
         if login_data
+          @job_id = login_data[:job_id] || 1
           login(login_data[:email], login_data[:password])
         else
+          @job_id = req.params["job_id"] || 1
           login(req.params["username"], req.params["password"])
         end
       else
