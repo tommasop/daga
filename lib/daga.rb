@@ -5,7 +5,16 @@ require "faraday"
 require "oj"
 require "logger"
 
-$logger = Logger.new($stdout)
+class MakeLog
+  def self.log
+    if @logger.nil?
+      @logger = Logger.new STDOUT
+      @logger.level = Logger::DEBUG
+      @logger.datetime_format = '%Y-%m-%d %H:%M:%S '
+    end
+    @logger
+  end
+end
 
 module Daga
   class Middleware
@@ -37,7 +46,7 @@ module Daga
       # Registering the request url to put in JWT sub
       # see: https://github.com/jwt/ruby-jwt#subject-claim
       @sub = req.base_url
-      $logger.info @sub
+      MakeLog.log.info @sub
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load( req.body.read ) : nil
         if login_data
@@ -54,7 +63,7 @@ module Daga
 
     private
     def grant_jwt_to(user)
-      $logger.info user
+      MakeLog.log.info user
       if user.is_a?(Hash)
         token = AuthToken.encode(token_data(user), @secret)
         # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
@@ -122,7 +131,7 @@ module Daga
           "role": "censore"
         }
       end
-      $logger.info payload
+      MakeLog.log.info payload
     end
   end
 
