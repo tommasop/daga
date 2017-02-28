@@ -101,33 +101,33 @@ module Daga
 
     def token_data(user_data)
       payload = { 
-        "username": user_data[:username] || "root", 
-        "job_id": @job_id, 
-        "sub": @sub || "http://localhost:3000",
-        "services": []
+        username: user_data[:username] || "root", 
+        job_id: @job_id, 
+        sub: @sub || "http://localhost:3000",
+        services: []
       }
 
       if user_data[:scopes]
         user_data[:scopes].each do | service |
-          payload["services"] << {  
-          "name": service[:name], 
-          "version": service[:version],
-          "url": service[:url], 
-          "role": service[:role]
+          payload[:services] << {  
+          name: service[:name], 
+          version: service[:version],
+          url: service[:url], 
+          role: service[:role]
         }
         end
       else
-        payload["services"] << {  
-          "name": "fenice", 
-          "version": "2.5",
-          "url": "http://localhost:3000", 
-          "role": "censore"
+        payload[:services] << {  
+          name: "fenice", 
+          version: "2.5",
+          url: "http://localhost:3000", 
+          role: "censore"
         }
-        payload["services"] << {  
-          "name": "ucad", 
-          "version": "beta",
-          "url": "http://localhost:3000/ucad", 
-          "role": "censore"
+        payload[:services] << {  
+          name: "ucad", 
+          version: "beta",
+          url: "http://localhost:3000/ucad", 
+          role: "censore"
         }
       end
       MakeLog.log.info payload
