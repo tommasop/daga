@@ -18,7 +18,7 @@ module Daga
       raise 'Secret must be provided' if opts[:secret].nil?
       @secret = opts[:secret]
       @url = url
-      @model = opts[:model].constantize || User 
+      @model = (opts[:model] || "User").constantize 
       # The external auth option will be checked to
       # add an external api call for authentication
       # it must contain the api endpoint and the username
