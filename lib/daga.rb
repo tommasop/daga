@@ -122,14 +122,14 @@ module Daga
           name: "fenice", 
           version: "2.5",
           url: "http://localhost:3000", 
-          role: "censore"
+          role: "admin"
         }
         payload[:services] << {  
           id: "00002",
           name: "ucad", 
           version: "beta",
           url: "http://localhost:3000/ucad", 
-          role: "censore"
+          role: "writer"
         }
       end
       payload
