@@ -14,7 +14,8 @@ Gem::Specification.new do |s|
   s.files = `git ls-files`.split("\n")
 
   s.add_dependency "armor"
-  s.add_dependency "jwt"
+  s.add_dependency "jwt", "~> 1.5", ">= 1.5.6"
+  s.add_dependency "jwe", "~> 0.1.1"
   s.add_dependency "oj"
   s.add_dependency "faraday"
   s.add_development_dependency "cutest"

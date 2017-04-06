@@ -1,5 +1,6 @@
 require "armor"
 require "jwt"
+require "jwe"
 # Access to external API
 require "faraday"
 require "oj"
@@ -213,16 +214,26 @@ module Daga
   # JWT Wrapper
   class AuthToken
     # Encode a hash in a json web token
-    def self.encode(payload, jwt_secret, ttl_in_seconds = 3600*8)
+    def self.encode(payload, jwt_secret, key = nil, ttl_in_seconds = 3600*8)
       payload[:exp] = (Time.now + ttl_in_seconds).to_i
-      JWT.encode(payload, jwt_secret)
+      token = JWT.encode(payload, jwt_secret)
+      key ? self.encrypt(token, key) : token
     end
 
     # Decode a token and return the payload inside
     # If will throw an error if expired or invalid. See the docs for the JWT gem.
-    def self.decode(token, jwt_secret, leeway = nil)
+    def self.decode(token, jwt_secret, key = nil, leeway = nil)
+      token = key ? self.decrypt(token,key) : token  
       decoded = JWT.decode(token, jwt_secret, leeway: leeway)
       decoded[0]
+    end
+    
+    def self.encrypt(token, key)
+      JWE.encrypt(token, key, alg: 'dir', enc: 'A128CBC-HS256')
+    end
+
+    def self.decrypt(token, key)
+      JWE.decrypt(token, key)
     end
   end
 end
