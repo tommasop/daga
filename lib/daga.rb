@@ -4,18 +4,15 @@ require "jwe"
 # Access to external API
 require "faraday"
 require "oj"
-require "logger"
+require "loga"
 
-class MakeLog
-  def self.log
-    if @logger.nil?
-      @logger = Logger.new STDOUT
-      @logger.level = Logger::DEBUG
-      @logger.datetime_format = '%Y-%m-%d %H:%M:%S '
-    end
-    @logger
-  end
-end
+Loga.configure(
+  filter_parameters: [:password],
+  level: Settings::LOG_LEVEL,
+  format: :gelf,
+  service_name: "UCAD_API",
+  tags: [:uuid]
+)
 
 module Daga
   class Middleware
@@ -63,7 +60,7 @@ module Daga
 
     private
     def grant_jwt_to(user)
-      MakeLog.log.info user
+      Loga.logger.debug user
       if user.is_a?(Hash)
         token = AuthToken.encode(token_data(user), @secret)
         # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
