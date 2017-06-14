@@ -8,7 +8,7 @@ require "loga"
 
 Loga.configure(
   filter_parameters: [:password],
-  level: Settings::LOG_LEVEL,
+  level: ENV["LOG_LEVEL"] || "DEBUG",
   format: :gelf,
   service_name: "UCAD_API",
   tags: [:uuid]
