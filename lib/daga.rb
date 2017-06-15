@@ -10,8 +10,8 @@ require "loga"
 # configuration if existing or rescue error
 # to provide new configuration
 begin 
-  config = Loga.configuration
-  config.service_name = "DAGA"
+  Loga.configuration.service_name = "DAGA"
+  Loga.logger.formatter = Loga.configuration.send(:assign_formatter)
 rescue Loga::ConfigurationError
   Loga.configure(
     filter_parameters: [:password],
