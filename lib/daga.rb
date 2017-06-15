@@ -111,9 +111,10 @@ module Daga
         username: user_data[:username] || "root_ucad", 
         job_id: @job_id, 
         sub: @sub || "http://localhost:3000",
-        services: [],
-        password: user_data[:password] if @encrypted
+        services: []
       }
+
+      payload.merge! { password: user_data[:password] } if @encrypted
 
       if user_data[:scopes]
         user_data[:scopes].each do | service |
