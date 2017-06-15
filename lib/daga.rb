@@ -165,6 +165,7 @@ module Daga
       end
 
       def is_valid_password?(user, password)
+        Loga.logger.debug "---- #{user.crypted_password}, #{password}"
         Daga::Password.check(password, user.crypted_password)
       end
     end
