@@ -6,13 +6,21 @@ require "faraday"
 require "oj"
 require "loga"
 
-#Loga.configure(
-#  filter_parameters: [:password],
-#  level: ENV["LOG_LEVEL"] || "DEBUG",
-#  format: :gelf,
-#  service_name: "UCAD_API",
-#  tags: [:uuid]
-#)
+# Loga initialization based on previous
+# configuration if existing or rescue error
+# to provide new configuration
+begin 
+  config = Loga.configuration
+  config.service_name = "DAGA"
+rescue Loga::ConfigurationError
+  Loga.configure(
+    filter_parameters: [:password],
+    level: ENV["LOG_LEVEL"] || "DEBUG",
+    format: :gelf,
+    service_name: "DAGA",
+    tags: [:uuid]
+  )
+end
 
 module Daga
   class Middleware
@@ -26,6 +34,7 @@ module Daga
       @secret = opts[:secret]
       @url = url
       @model = (opts[:model] || "User").constantize 
+      @encrypted = opts[:encrypt] || nil
       # The external auth option will be checked to
       # add an external api call for authentication
       # it must contain the api endpoint and the username
@@ -62,10 +71,10 @@ module Daga
     def grant_jwt_to(user)
       Loga.logger.debug user
       if user.is_a?(Hash)
-        token = AuthToken.encode(token_data(user), @secret)
+        token = AuthToken.encode(token_data(user), @secret, @encrypted)
         # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
       else
-        token = AuthToken.encode({ auth: user.id, user: user, scopes: user.scopes }, @secret)
+        token = AuthToken.encode({ auth: user.id, user: user, scopes: user.scopes }, @secret, @encrypted)
       end
       payload = Oj.dump({"id_token" => token})
       Rack::Response.new([payload], 201).finish
