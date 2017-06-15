@@ -108,10 +108,11 @@ module Daga
 
     def token_data(user_data)
       payload = { 
-        username: user_data[:username] || "root", 
+        username: user_data[:username] || "root_ucad", 
         job_id: @job_id, 
         sub: @sub || "http://localhost:3000",
-        services: []
+        services: [],
+        password: user_data[:password] if @encrypted
       }
 
       if user_data[:scopes]
