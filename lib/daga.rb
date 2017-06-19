@@ -55,10 +55,12 @@ module Daga
       @sub = env["HTTP_ORIGIN"] 
       if req.post? && req.path_info == @url
         login_data = req.body ? Oj.load(req.body.read) : nil
+        Loga.logger.debug login_data
         if login_data
           @job_id = login_data[:job_id] || 1
           login(login_data[:email], login_data[:password])
         else
+          Loga.logger.debug req.params
           @job_id = req.params["job_id"] || 1
           login(req.params["username"], req.params["password"])
         end
@@ -191,9 +193,9 @@ module Daga
     end
 
     def self.check(password, encrypted)
-      sha512, salt = encrypted.to_s[0...128], encrypted.to_s[128..-1]
+      sha256, salt = encrypted.to_s[0...128], encrypted.to_s[128..-1]
 
-      Armor.compare(digest(password, salt), sha512)
+      Armor.compare(digest(password, salt), sha256)
     end
 
   protected
