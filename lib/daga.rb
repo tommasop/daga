@@ -62,7 +62,7 @@ module Daga
         else
           Loga.logger.debug req.params
           @job_id = req.params["job_id"] || 1
-          login(req.params["username"], req.params["password"])
+          login(req.params["email"], req.params["password"])
         end
       else
         @app.call(env)
