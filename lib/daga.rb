@@ -116,7 +116,7 @@ module Daga
         services: []
       }
 
-      payload.merge!({ password: orig_pwd }) if @encrypted
+      payload.merge!({ password: Base64.decode64(orig_pwd) }) if @encrypted
 
       if user_data[:scopes]
         user_data[:scopes].each do | service |
