@@ -149,7 +149,7 @@ module Daga
             name: "ucad", 
             version: "beta",
             url: "http://localhost:9000", 
-            role: "admin"
+            role: "writer"
           }
         end
       end
