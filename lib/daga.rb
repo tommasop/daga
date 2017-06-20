@@ -70,10 +70,10 @@ module Daga
     end
 
     private
-    def grant_jwt_to(user)
+    def grant_jwt_to(user, orig_pwd)
       Loga.logger.debug user
       if user.is_a?(Hash)
-        token = AuthToken.encode(token_data(user), @secret, @encrypted)
+        token = AuthToken.encode(token_data(user, orig_pwd), @secret, @encrypted)
         # token = AuthToken.encode({ auth: user[:id], user: user, scopes: user[:scopes] }, @secret)
       else
         token = AuthToken.encode({ auth: user.id, user: user, scopes: user.scopes }, @secret, @encrypted)
@@ -97,7 +97,7 @@ module Daga
       if external_user[:login] == true
         #permissions = Oj.load(Faraday.get(@external_auth[:acl_url]).body)
         #external_user[:scopes] = Oj.dump([{"all" => ["all"]}) #permissions 
-        grant_jwt_to(external_user)
+        grant_jwt_to(external_user, password)
       else
         no_auth
       end
