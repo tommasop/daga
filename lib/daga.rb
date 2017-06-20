@@ -57,11 +57,11 @@ module Daga
         login_data = req.body ? Oj.load(req.body.read) : nil
         Loga.logger.debug login_data
         if login_data
-          @job_id = login_data[:job_id] || 1
+          @job_id = login_data[:job_id] || 0
           login(login_data[:email], login_data[:password])
         else
           Loga.logger.debug req.params
-          @job_id = req.params["job_id"] || 1
+          @job_id = req.params["job_id"] || 0
           login(req.params["email"], req.params["password"])
         end
       else
@@ -128,20 +128,30 @@ module Daga
         }
         end
       else
-        payload[:services] << {  
-          id: "00001",
-          name: "fenice", 
-          version: "2.5",
-          url: "http://localhost:3000", 
-          role: "admin"
-        }
-        payload[:services] << {  
-          id: "00002",
-          name: "ucad", 
-          version: "beta",
-          url: "http://localhost:3000/ucad", 
-          role: "writer"
-        }
+        if @job_id != 0
+          payload[:services] << {  
+            id: "00001",
+            name: "fenice", 
+            version: "2.5",
+            url: "http://localhost:3000", 
+            role: "admin"
+          }
+          payload[:services] << {  
+            id: "00002",
+            name: "ucad", 
+            version: "beta",
+            url: "http://localhost:3000/ucad", 
+            role: "writer"
+          }
+        else
+          payload[:services] << {  
+            id: "00002",
+            name: "ucad", 
+            version: "beta",
+            url: "http://localhost:9000", 
+            role: "admin"
+          }
+        end
       end
       payload
     end
