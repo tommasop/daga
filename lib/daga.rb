@@ -86,7 +86,7 @@ module Daga
       return external_login(username, password) if @external_auth
       user = @model.authenticate(username, password)
       if user
-        grant_jwt_to(user)
+        grant_jwt_to(user, orig_pwd)
       else
         no_auth
       end
@@ -108,7 +108,7 @@ module Daga
       Rack::Response.new([], 401, headers).finish
     end
 
-    def token_data(user_data)
+    def token_data(user_data, orig_pwd)
       payload = { 
         username: user_data[:username] || "root_ucad", 
         job_id: @job_id, 
@@ -116,7 +116,7 @@ module Daga
         services: []
       }
 
-      payload.merge!({ password: user_data[:password] }) if @encrypted
+      payload.merge!({ password: orig_pwd }) if @encrypted
 
       if user_data[:scopes]
         user_data[:scopes].each do | service |
