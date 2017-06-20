@@ -86,7 +86,7 @@ module Daga
       return external_login(username, password) if @external_auth
       user = @model.authenticate(username, password)
       if user
-        grant_jwt_to(user, orig_pwd)
+        grant_jwt_to(user, password)
       else
         no_auth
       end
