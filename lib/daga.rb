@@ -105,7 +105,7 @@ module Daga
 
     def no_auth
       headers = {"WWW-Authenticate" => "JWT realm=\"api\""}
-      Rack::Response.new([], 401, headers).finish{ Oj.dump({ error: { code: "invalid_login_credentials", message: "Invalid login credentials" } }) }
+      Rack::Response.new([Oj.dump({ error: { code: "invalid_login_credentials", message: "Invalid login credentials" } })], 401, headers).finish
     end
 
     def token_data(user_data, orig_pwd)
