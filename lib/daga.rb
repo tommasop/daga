@@ -236,8 +236,6 @@ module Daga
   class AuthToken
     # Encode a hash in a json web token
     def self.encode(payload, jwt_secret, key = nil, ttl_in_seconds = 3600*8)
-      p "PIPPO"
-      p payload
       payload[:exp] = (Time.now + ttl_in_seconds).to_i
       token = JWT.encode(payload, jwt_secret)
       key ? self.encrypt(token, key) : token
