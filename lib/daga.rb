@@ -112,7 +112,7 @@ module Daga
       payload = { 
         username: user_data[:name] || "root_ucad", 
         job_id: @job_id, 
-        sub: @sub || "http://localhost:30eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..deshFDOJ4vfUxwhQi4imlw.pJY-qPRrYNl3gupe2k2YoDD6MiyCwgXXBV57pRYWNtOvDRWqs2StkfBAxSC437YK_KBOeQLc6IcvHCczGgpMGDJf_kqmMDRj-k_U_aHJjLWy8shmP0g1S-txmyZYVA3zieQi8ZhB31y8aRlQ0F0c3XCEFHsiOoG_gbt5noJqvxa-1gIjONmZvSO8NaJieOUQskcSr2syGLTQ0pjsfE2viOXSFfKb3lIJ5DabRW7DgxHc9rt6zGZDmJdGNZgoispOj-11S1fKBfNrvjXw-SvgEwNNFYSpVh9Av1KJcBGPbTf_6u7byB1pJrURFaNI10HnRHdxwq_jx3_zsrEZJ4XAH_i2n5V71xEWVPv_lbxI0Nbg5S2wvX9WXHj_Fd8aOCNVO-4bFTNpcOdWbivgbFNCfkVi3dicxHa7cLPRD5mhL03-VTTrlEIm9dxArYPmcoqnt9C3h04lbYp6UTqPImqTWzMJy-Ous5BuvHhXKEGyPLUdLNKAmp4e6Zyo9cw_uDkUSdybzis_3pQ3NM0ftOzpzGif8vMuRrNt0wHg01Ubb_3sNmAzZ06i4sWT_wIqS-B4Mdz3IT3mIXtHxDvQ3eUGEcbPXdH60cErwfIc5i4ZDM2f4W5-qu-PBMOu_iY6Sw9yNH5JiLDV9Q8pD8tgq2Nsm13Bcp4zPZS91fvy_wNm880RSN8VdLzVlS4TkxI1bwi8.d0LLuztksm1HkmfHYwNkww00",
+        sub: @sub || "http://localhost:3000",
         services: []
       }
 
