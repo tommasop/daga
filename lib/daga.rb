@@ -148,7 +148,7 @@ module Daga
             id: "00002",
             name: "ucad", 
             version: "beta",
-            url: "http://localhost:9000", 
+            url: @sub, 
             role: "writer"
           }
         end
